@@ -268,7 +268,7 @@
                                   <Component id="jTextField2" alignment="0" min="-2" pref="325" max="-2" attributes="0"/>
                                   <Component id="jTextField3" alignment="0" min="-2" pref="325" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="203" max="32767" attributes="0"/>
                               <Component id="CAJA_botones" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="161" max="-2" attributes="0"/>
                           </Group>

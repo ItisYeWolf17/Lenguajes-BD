@@ -3,7 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package Interfaz;
-
+import java.awt.Color;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 /**
  *
  * @author Sebastian Pacas
@@ -13,6 +18,8 @@ public class Ops_inventario extends javax.swing.JFrame {
     /**
      * Creates new form Ops_inventario
      */
+    int xPos, yPos;
+
     public Ops_inventario() {
         initComponents();
     }
