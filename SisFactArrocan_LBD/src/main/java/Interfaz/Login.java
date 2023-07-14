@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+/* * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package Interfaz;
 
+import com.g8lbd.sisfactarrocan_lbd.ConexionOracle;
 import java.awt.Color;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -18,20 +20,8 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
+    ConexionOracle orcl = new ConexionOracle();
     int xPos, yPos;
-
-    public Connection linkBD() {
-        Connection conn = null;
-
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orclbd",
-                    "admin_arro", "arro123");
-        } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("No se conecta a la base de datos");
-        }
-        return conn;
-    }
 
     public Login() {
         initComponents();
@@ -89,6 +79,11 @@ public class Login extends javax.swing.JFrame {
         usernameField.setForeground(new java.awt.Color(104, 122, 150));
         usernameField.setText("Ingrese su usuario");
         usernameField.setBorder(null);
+        usernameField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                usernameFieldMousePressed(evt);
+            }
+        });
 
         passwordLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         passwordLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -97,8 +92,13 @@ public class Login extends javax.swing.JFrame {
         passwordField.setBackground(new java.awt.Color(16, 36, 61));
         passwordField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         passwordField.setForeground(new java.awt.Color(104, 122, 150));
-        passwordField.setText("jPasswordField1");
+        passwordField.setText("**********");
         passwordField.setBorder(null);
+        passwordField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                passwordFieldMousePressed(evt);
+            }
+        });
 
         userIcon.setIcon(new javax.swing.JLabel() {
             public javax.swing.Icon getIcon() {
@@ -123,6 +123,17 @@ public class Login extends javax.swing.JFrame {
         signInLabel.setForeground(new java.awt.Color(255, 255, 255));
         signInLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         signInLabel.setText("Sign In");
+        signInLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                signInLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                signInLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                signInLabelMouseExited(evt);
+            }
+        });
 
         javax.swing.GroupLayout bgSignInLayout = new javax.swing.GroupLayout(bgSignIn);
         bgSignIn.setLayout(bgSignInLayout);
@@ -314,6 +325,97 @@ public class Login extends javax.swing.JFrame {
         exitButton.setBackground(Color.decode("#D95A53"));
         exitText.setForeground(Color.white);
     }//GEN-LAST:event_exitTextMouseExited
+
+    private void usernameFieldMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameFieldMousePressed
+        // TODO add your handling code here:
+        if (usernameField.getText().equals("Ingrese su usuario")) {
+            usernameField.setText("");
+            usernameField.setForeground(Color.white);
+        }
+
+        if (String.valueOf(passwordField.getPassword()).isEmpty()) {
+            passwordField.setText("**********");
+            passwordField.setForeground(Color.decode("#687A96"));
+        }
+    }//GEN-LAST:event_usernameFieldMousePressed
+
+    private void passwordFieldMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_passwordFieldMousePressed
+        // TODO add your handling code here:
+        if (usernameField.getText().isEmpty()) {
+            usernameField.setText("Ingrese su usuario");
+            usernameField.setForeground(Color.decode("#687A96"));
+        }
+
+        if (String.valueOf(passwordField.getPassword()).equals("**********")) {
+            passwordField.setText("");
+            passwordField.setForeground(Color.white);
+        }
+    }//GEN-LAST:event_passwordFieldMousePressed
+
+    private void signInLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signInLabelMouseEntered
+        // TODO add your handling code here:
+        bgSignIn.setBackground(Color.decode("#B84C46"));
+    }//GEN-LAST:event_signInLabelMouseEntered
+
+    private void signInLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signInLabelMouseExited
+        // TODO add your handling code here:
+        bgSignIn.setBackground(Color.decode("#D95A53"));
+
+    }//GEN-LAST:event_signInLabelMouseExited
+
+    private void signInLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signInLabelMouseClicked
+
+        Connection conn = orcl.linkBD();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            String nombreUsuario = usernameField.getText();
+            String contraseñaUsuario = String.valueOf(passwordField.getPassword());
+
+            // Preparar la consulta
+            String query = "SELECT COUNT(*) FROM Colaboradores WHERE Nombre = ? AND Cedula = ?";
+            statement = conn.prepareStatement(query);
+            statement.setString(1, nombreUsuario);
+            statement.setString(2, contraseñaUsuario);
+
+            // Ejecutar la consulta
+            resultSet = statement.executeQuery();
+
+            // Verificar el resultado
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count == 1) {
+                    Menu  menu = new Menu();
+                    menu.nombreCuenta(nombreUsuario);
+                    menu.setVisible(true);
+                    dispose();
+                    System.out.println("Credenciales válidas");
+                } else {
+                    System.out.println("Credenciales inválidas");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Cerrar recursos
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }//GEN-LAST:event_signInLabelMouseClicked
 
     /**
      * @param args the command line arguments
