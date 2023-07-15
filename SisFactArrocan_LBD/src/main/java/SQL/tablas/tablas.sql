@@ -1,5 +1,6 @@
 
 
+
 -- ========================================================
 -- ===============   Tablas Principales ==================
 -- ========================================================
@@ -25,10 +26,6 @@ BEGIN
 END;
 /
 
--- Registro Prueba
-INSERT INTO Clientes (cedula, nombre, apellido)
-VALUES (3235236432, 'Maria', 'Torres');
-
 -- ___________________ Departamentos ___________________________
 
 CREATE TABLE Departamentos (
@@ -47,10 +44,6 @@ BEGIN
   SELECT Seq_Departamentos.NEXTVAL INTO :NEW.id_departamento FROM DUAL;
 END;
 /
-
--- Registro Prueba
-INSERT INTO Departamentos (nombre_departamento)
-VALUES ('Recursos Humanos');
 
 -- ___________________ Puestos ___________________________
 
@@ -72,10 +65,6 @@ BEGIN
   SELECT Seq_Puestos.NEXTVAL INTO :NEW.id_puesto FROM DUAL;
 END;
 /
-
--- Registro Prueba
-INSERT INTO Puestos (id_departamento, nombre)
-VALUES ('1', 'Director RH');
 
 -- ___________________ Colaboradores ___________________________
 
@@ -100,9 +89,6 @@ BEGIN
 END;
 /
 
--- Registro Prueba
-INSERT INTO Colaboradores (id_puesto,cedula,nombre,apellido)
-VALUES ('1', 32555, 'Adrian', 'Alvarado Zumbado');
 -- ___________________ Proveedores ___________________________
 
 CREATE TABLE Proveedores (
@@ -122,10 +108,6 @@ BEGIN
   SELECT Seq_Proveedores.NEXTVAL INTO :NEW.id_proveedores FROM DUAL;
 END;
 /
-
--- Registro Prueba
-INSERT INTO Proveedores (empresa, costo_envio)
-VALUES ('Una empresa', 5000);
 
 -- ___________________ Metodos_Pago ___________________________
 
@@ -154,7 +136,6 @@ VALUES ('Tarjeta');
 INSERT INTO Metodos_Pago (metodo_pago)
 VALUES ('SINPE');
 
-
 -- ___________________ Provincias ___________________________
 
 CREATE TABLE Provincias (
@@ -176,7 +157,7 @@ END;
 
 -- Registro
 INSERT INTO Provincias (provincia)
-VALUES ('San José');
+VALUES ('San JosÃ©');
 INSERT INTO Provincias (provincia)
 VALUES ('Alajuela');
 INSERT INTO Provincias (provincia)
@@ -188,7 +169,7 @@ VALUES ('Puntarenas');
 INSERT INTO Provincias (provincia)
 VALUES ('Guanacaste');
 INSERT INTO Provincias (provincia)
-VALUES ('Limón');
+VALUES ('LimÃ³n');
 
 -- ___________________ Cantones ___________________________
 
@@ -211,10 +192,6 @@ BEGIN
 END;
 /
 
--- Registro Prueba
-INSERT INTO Cantones (id_provincia, canton)
-VALUES (1, 'San José');
-
 -- ___________________ Distritos ___________________________
 
 CREATE TABLE Distritos (
@@ -236,12 +213,7 @@ BEGIN
 END;
 /
 
--- Registro Prueba
-INSERT INTO Distritos (id_canton, distrito)
-VALUES (1, 'Carmen');
-
 -- ___________________ Direcciones ___________________________
-
 
 CREATE TABLE Direcciones (
   id_direccion int PRIMARY KEY NOT NULL,
@@ -266,10 +238,6 @@ BEGIN
 END;
 /
 
--- Registro Prueba
-INSERT INTO Direcciones (id_provincia, id_canton, id_distrito, detalle)
-VALUES (1, 1, 1, 'Esta es una direccion de prueba');
-
 -- ___________________ Correos ___________________________
 
 CREATE TABLE Correos (
@@ -289,13 +257,9 @@ BEGIN
 END;
 /
 
--- Registro Prueba
-INSERT INTO Correos (correo)
-VALUES ('prueba@correo.com');
-
 -- ___________________ telefonos ___________________________
 
-CREATE TABLE telefonos (
+CREATE TABLE Telefonos (
   id_telefono int PRIMARY KEY NOT NULL,
   telefono int NOT NULL
 );
@@ -311,10 +275,6 @@ BEGIN
   SELECT Seq_telefonos.NEXTVAL INTO :NEW.id_telefono FROM DUAL;
 END;
 /
-
--- Registro Prueba
-INSERT INTO telefonos (telefono)
-VALUES (71048756);
 
 -- ___________________ Productos ___________________________
 
@@ -339,13 +299,9 @@ BEGIN
 END;
 /
 
--- Registro Prueba
-INSERT INTO Productos (nombre, marca, descripcion, precio_venta, stock)
-VALUES ('Producto1', 'marcaProducto', 'descripcion', 2500, 5);
-
 -- ___________________ FacturaVentas ___________________________
 
-CREATE TABLE Facturas_Compras (
+CREATE TABLE Facturas_Ventas (
   id_factura_venta int PRIMARY KEY NOT NULL,
   id_cliente int NOT NULL, -- FK
   id_colab int NOT NULL, -- FK
@@ -358,21 +314,17 @@ CREATE TABLE Facturas_Compras (
   FOREIGN KEY (id_metodo_pago) REFERENCES Metodos_Pago(id_metodo_pago)
 );
 
-CREATE SEQUENCE Seq_Facturas_Compras
+CREATE SEQUENCE Seq_Facturas_Ventas
   START WITH 1
   INCREMENT BY 1;
   
-CREATE OR REPLACE TRIGGER Trg_Facturas_Compras
-  BEFORE INSERT ON Facturas_Compras
+CREATE OR REPLACE TRIGGER Trg_Facturas_Ventas
+  BEFORE INSERT ON Facturas_Ventas
   FOR EACH ROW
 BEGIN
-  SELECT Seq_Facturas_Compras.NEXTVAL INTO :NEW.id_factura_venta FROM DUAL;
+  SELECT Seq_Facturas_Ventas.NEXTVAL INTO :NEW.id_factura_venta FROM DUAL;
 END;
 /
-
--- Insertar un registro en la tabla Facturas_Compras
-INSERT INTO Facturas_Compras (id_cliente, id_colab, id_metodo_pago, monto, descuento)
-VALUES (1, 1, 1, 100.5, 0.05);
 
 -- ___________________ Facturas_Compras _____________________
 
@@ -400,11 +352,6 @@ BEGIN
   SELECT Seq_Facturas_Compras.NEXTVAL INTO :NEW.id_factura_compra FROM DUAL;
 END;
 /
-
--- Insertar un registro en la tabla Facturas_Compras
-INSERT INTO Facturas_Compras (id_colab, id_proveedores, id_metodo_pago, monto, descuento)
-VALUES (1, 1, 1, 100.5, 0.05);
-select * from Facturas_Compras;
 
 -- ================================================================
 -- ======================   Tablas de Apoyo =======================
@@ -464,7 +411,6 @@ CREATE TABLE Telefonos_Colaboradores (
   FOREIGN KEY (id_telefono) REFERENCES telefonos(id_telefono)
 );
 
-
 -- ___________________ Direcciones_Proveedores ___________________________
 
 CREATE TABLE Direcciones_Proveedores (
@@ -508,7 +454,7 @@ CREATE TABLE Factura_Productos_Ventas (
   id_producto int,
   cantidad int,
   precio int,
-  FOREIGN KEY (id_factura_venta) REFERENCES Facturas_Compras(id_factura_venta),
+  FOREIGN KEY (id_factura_venta) REFERENCES Facturas_Ventas(id_factura_venta),
   FOREIGN KEY (id_producto) REFERENCES Productos(id_producto)
 );
 
@@ -522,7 +468,6 @@ CREATE TABLE Factura_Productos_Compras (
   FOREIGN KEY (id_factura_compra) REFERENCES Facturas_Compras(id_factura_compra),
   FOREIGN KEY (id_producto) REFERENCES Productos(id_producto)
 );
-
 
 -- ________________ COMMIT _____________________
 
